@@ -1,17 +1,15 @@
 {
-  "name": "com.alianblank.readassets",
-  "displayName": "Blank Read Assets",
+  "name": "com.alianblank.gameframex.unity.readassets",
+  "displayName": "Game Frame X Read Assets",
   "version": "1.0.1",
   "unity": "2017.1",
   "description": "通过同步接口的方式读取StreamingAssets 下的文件",
   "author": {
     "name": "alianblank",
-    "url": "https://github.com/AlianBlank/BlankReadAssets"
+    "url": "https://github.com/AlianBlank/com.alianblank.gameframex.unity.readassets"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AlianBlank/BlankReadAssets.git"
-  },
-  "relatedPackages": {},
-  "type": "library"
+    "url": "https://github.com/AlianBlank/com.alianblank.gameframex.unity.readassets.git"
+  }
 }
