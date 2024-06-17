@@ -1,5 +1,5 @@
 {
-  "name": "com.alianblank.gameframex.unity.readassets",
+  "name": "com.gameframex.unity.readassets",
   "displayName": "Game Frame X Read Assets",
   "version": "1.0.1",
   "unity": "2017.1",
@@ -11,6 +11,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AlianBlank/com.alianblank.gameframex.unity.readassets.git"
+    "url": "https://github.com/AlianBlank/com.gameframex.unity.readassets.git"
   }
 }
