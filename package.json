@@ -1,7 +1,7 @@
 {
   "name": "com.gameframex.unity.readassets",
   "displayName": "Game Frame X Read Assets",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "unity": "2017.1",
   "description": "通过同步接口的方式读取StreamingAssets 下的文件",
   "author": {
