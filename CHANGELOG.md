@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.0.3...1.1.0) (2025-12-24)
+
+
+### Features
+
+* **ci:** change ci ([438482d](https://github.com/gameframex/com.gameframex.unity.readassets/commit/438482d4c89db135075962168dac578926ca9159))
+
 # Changelog
 
 ## [1.0.3](https://github.com/GameFrameX/com.gameframex.unity.readassets/tree/1.0.3) (2025-06-01)
