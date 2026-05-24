@@ -1,31 +1,64 @@
-# 简介
+<div align="center">
+  <img src="https://download.alianblank.com/gameframex/gameframex_logo_320.png" alt="Game Frame X Logo" width="160" />
+</div>
 
-Unity 中通过非 `WWW` 的方式读取 `StreamingAssets` 下的文件
+# Game Frame X Read Assets
 
-该库主要服务于 `https://github.com/AlianBlank/GameFrameX` 作为子库使用。
+[![License](https://img.shields.io/github/license/GameFrameX/com.gameframex.unity.readassets)](https://github.com/GameFrameX/com.gameframex.unity.readassets/blob/main/LICENSE.md)
+[![Version](https://img.shields.io/github/v/release/GameFrameX/com.gameframex.unity.readassets)](https://github.com/GameFrameX/com.gameframex.unity.readassets/releases)
+[![Documentation](https://img.shields.io/badge/Documentation-docs-blue)](https://gameframex.doc.alianblank.com)
 
-# 使用方式(三种方式)
+> All-in-One Solution for Indie Game Development · Empowering Indie Developers' Dreams
 
-1. 直接在 `manifest.json` 文件中添加以下内容
+[Documentation](https://gameframex.doc.alianblank.com) · [Quick Start](#quick-start) · [QQ Group](https://qm.qq.com/q/5U9Fvebw) · [Language](#language)
+
+---
+
+## Language
+
+**English** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+
+---
+
+## Project Overview
+
+Read files under `StreamingAssets` in Unity through synchronous interfaces (without using `WWW`).
+
+This library primarily serves as a sub-library for `https://github.com/AlianBlank/GameFrameX`.
+
+## Quick Start
+
+### Installation (three methods)
+
+1. Add the following content directly to `manifest.json`:
    ```json
-      {"com.gameframex.unity.readassets": "https://github.com/AlianBlank/com.gameframex.unity.readassets.git"}
-    ```
-2. 在Unity 的`Packages Manager` 中使用`Git URL` 的方式添加库,地址为：https://github.com/AlianBlank/com.gameframex.unity.readassets.git
+   {"com.gameframex.unity.readassets": "https://github.com/AlianBlank/com.gameframex.unity.readassets.git"}
+   ```
 
-3. 直接下载仓库放置到Unity 项目的`Packages` 目录下。会自动加载识别
+2. Add via Unity's `Package Manager` using `Git URL`: https://github.com/AlianBlank/com.gameframex.unity.readassets.git
 
-# 使用方式
+3. Download the repository directly and place it in the Unity project's `Packages` directory. It will be auto-loaded.
 
-## `传入路径为相对目录`
+## Usage Examples
 
-- ReadBuffer 读取Byte[] 数组
+### Relative path input
 
+- **ReadBuffer** - Read as `byte[]` array:
+
+```csharp
+byte[] buffer = BlankReadAssets.Read(string path);
 ```
- byte[] buffer = BlankReadAssets.Read(string path)
+
+- **IsFileExists** - Check if file exists:
+
+```csharp
+bool isFileExists = BlankReadAssets.IsFileExists(string path);
 ```
 
-- IsFileExists 文件是否存在
+## Changelog
 
-```
- bool isFileExists = BlankReadAssets.IsFileExists(string path)
-```
+See [CHANGELOG.md](CHANGELOG.md) for details.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
