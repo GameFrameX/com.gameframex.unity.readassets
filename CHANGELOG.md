@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.1.0...1.1.1) (2026-05-28)
+
+
+### Bug Fixes
+
+* **ci:** 统一 .github 工作流配置 ([3d2ad51](https://github.com/gameframex/com.gameframex.unity.readassets/commit/3d2ad51582c4660fe21c450edf38e938a79c128a))
+* **docs:** 修复 README 头部 div 居中范围 ([52891ec](https://github.com/gameframex/com.gameframex.unity.readassets/commit/52891ecd80a6d283ccda458bfee5597d019c963b))
+
 # [1.1.0](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.0.3...1.1.0) (2025-12-24)
 
 
