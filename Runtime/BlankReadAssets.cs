@@ -1,45 +1,195 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using GameFrameX.ReadAssets.Runtime.ZipArchive;
+
+#if UNITY_EDITOR
+using BlankReadAssetsImpl = GameFrameX.ReadAssets.Runtime.BlankReadAssets.EditorImpl;
+#elif UNITY_ANDROID
+using BlankReadAssetsImpl = GameFrameX.ReadAssets.Runtime.BlankReadAssets.ApkImpl;
+#else
+using BlankReadAssetsImpl = GameFrameX.ReadAssets.Runtime.BlankReadAssets.LooseFilesImpl;
+#endif
 
 namespace GameFrameX.ReadAssets.Runtime
 {
     /// <summary>
-    /// Android 平台资产文件读取工具，通过 JNI 直接调用 Android AssetManager API 读取 APK 内 assets 目录下的文件。
-    /// 无需原生插件（AAR/JAR），纯 C# 实现。
+    /// StreamingAssets 文件读取工具，以统一且线程安全的方式直接访问 StreamingAssets。
+    /// 支持包括 Android APK 在内的所有平台。
     /// </summary>
-    public static class BlankReadAssets
+    public static partial class BlankReadAssets
     {
-        private static readonly object _lock = new object();
-        private static readonly HashSet<string> _fileCache = new HashSet<string>();
-
-#if UNITY_ANDROID
-        private static AndroidJavaObject _assetManager;
-
-        private static void EnsureAssetManager()
+        internal struct ReadInfo
         {
-            if (_assetManager == null)
-            {
-                lock (_lock)
-                {
-                    if (_assetManager == null)
-                    {
-                        using (var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-                        using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
-                        using (var application = activity.Call<AndroidJavaObject>("getApplication"))
-                        {
-                            _assetManager = application.Call<AndroidJavaObject>("getAssets");
-                        }
-                    }
-                }
-            }
+            public string readPath;
+            public long size;
+            public long offset;
+            public uint crc32;
+        }
+
+        public static string Root
+        {
+            get { return BlankReadAssetsImpl.s_root; }
+        }
+
+        public static void Initialize()
+        {
+            BlankReadAssetsImpl.Initialize(Application.dataPath, Application.streamingAssetsPath);
+        }
+
+        public static void Initialize(string dataPath, string streamingAssetsPath)
+        {
+            BlankReadAssetsImpl.Initialize(dataPath, streamingAssetsPath);
+        }
+
+        /// <summary>
+        /// Android only: raised when there's a Streaming Asset that is compressed.
+        /// </summary>
+        public static event Func<string, bool> CompressedStreamingAssetFound
+#if UNITY_EDITOR || UNITY_ANDROID
+            ;
+#else
+            { add { } remove { } }
+#endif
+
+#if UNITY_EDITOR
+        public static void InitializeWithExternalApk(string apkPath)
+        {
+            BlankReadAssetsImpl.ApkMode = true;
+            BlankReadAssetsImpl.Initialize(apkPath, "jar:file://" + apkPath + "!/assets/");
+        }
+
+        public static void InitializeWithExternalDirectories(string dataPath, string streamingAssetsPath)
+        {
+            BlankReadAssetsImpl.ApkMode = false;
+            BlankReadAssetsImpl.Initialize(dataPath, streamingAssetsPath);
         }
 #endif
 
         /// <summary>
-        /// 读取文件
+        /// 检查文件是否存在
         /// </summary>
-        /// <param name="path">相对目录</param>
+        /// <param name="path">相对路径</param>
+        /// <returns>文件是否存在</returns>
+        public static bool FileExists(string path)
+        {
+            ReadInfo info;
+            return BlankReadAssetsImpl.TryGetInfo(path, out info);
+        }
+
+        /// <summary>
+        /// 检查文件是否存在（向后兼容）
+        /// </summary>
+        /// <param name="path">相对路径</param>
+        /// <returns>文件是否存在</returns>
+        public static bool IsFileExists(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return false;
+            }
+            return FileExists(path);
+        }
+
+        public static bool DirectoryExists(string path)
+        {
+            return BlankReadAssetsImpl.DirectoryExists(path);
+        }
+
+        public static AssetBundleCreateRequest LoadAssetBundleAsync(string path, uint crc = 0)
+        {
+            var info = GetInfoOrThrow(path);
+            return AssetBundle.LoadFromFileAsync(info.readPath, crc, (ulong)info.offset);
+        }
+
+        public static AssetBundle LoadAssetBundle(string path, uint crc = 0)
+        {
+            var info = GetInfoOrThrow(path);
+            return AssetBundle.LoadFromFile(info.readPath, crc, (ulong)info.offset);
+        }
+
+        public static Stream OpenRead(string path)
+        {
+            if ( path == null )
+            {
+                throw new ArgumentNullException("path");
+            }
+            if ( path.Length == 0 )
+            {
+                throw new ArgumentException("Empty path", "path");
+            }
+
+            return BlankReadAssetsImpl.OpenRead(path);
+        }
+
+        public static StreamReader OpenText(string path)
+        {
+            Stream str = OpenRead(path);
+            try
+            {
+                return new StreamReader(str);
+            }
+            catch (System.Exception)
+            {
+                if (str != null)
+                {
+                    str.Dispose();
+                }
+                throw;
+            }
+        }
+
+        public static string ReadAllText(string path)
+        {
+            using ( var sr = OpenText(path) )
+            {
+                return sr.ReadToEnd();
+            }
+        }
+
+        public static string[] ReadAllLines(string path)
+        {
+            string line;
+            var lines = new List<string>();
+
+            using ( var sr = OpenText(path) )
+            {
+                while ( ( line = sr.ReadLine() ) != null )
+                {
+                    lines.Add(line);
+                }
+            }
+
+            return lines.ToArray();
+        }
+
+        /// <summary>
+        /// 读取文件全部字节
+        /// </summary>
+        /// <param name="path">相对路径</param>
+        /// <returns>文件字节数组</returns>
+        public static byte[] ReadAllBytes(string path)
+        {
+            if ( path == null )
+            {
+                throw new ArgumentNullException("path");
+            }
+            if ( path.Length == 0 )
+            {
+                throw new ArgumentException("Empty path", "path");
+            }
+
+            return BlankReadAssetsImpl.ReadAllBytes(path);
+        }
+
+        /// <summary>
+        /// 读取文件（向后兼容，失败返回 null）
+        /// </summary>
+        /// <param name="path">相对路径</param>
         /// <returns>文件字节数组，失败返回 null</returns>
         public static byte[] Read(string path)
         {
@@ -48,90 +198,47 @@ namespace GameFrameX.ReadAssets.Runtime
                 throw new ArgumentException("Path cannot be null or empty.", "path");
             }
 
-#if UNITY_ANDROID
-            EnsureAssetManager();
-
-            AndroidJavaObject inputStream = null;
             try
             {
-                inputStream = _assetManager.Call<AndroidJavaObject>("open", path);
-                int size = inputStream.Call<int>("available");
-
-                IntPtr rawStream = inputStream.GetRawObject();
-                IntPtr rawClass = AndroidJNI.GetObjectClass(rawStream);
-                IntPtr readMethodId = AndroidJNIHelper.GetMethodID(rawClass, "read", "([B)I");
-
-                IntPtr javaBuffer = AndroidJNI.NewByteArray(size);
-                jvalue[] readArgs = new jvalue[] { new jvalue { l = javaBuffer } };
-                AndroidJNI.CallIntMethod(rawStream, readMethodId, readArgs);
-
-                byte[] result = AndroidJNI.FromByteArray(javaBuffer);
-                AndroidJNI.DeleteLocalRef(javaBuffer);
-
-                inputStream.Call("close");
-                _fileCache.Add(path);
-                return result;
+                return ReadAllBytes(path);
             }
             catch (Exception e)
             {
                 Debug.LogError("[BlankReadAssets] Failed to read file '" + path + "': " + e.Message);
                 return null;
             }
-            finally
-            {
-                if (inputStream != null)
-                {
-                    inputStream.Dispose();
-                }
-            }
-#else
-            Debug.LogWarning("[BlankReadAssets] Read is only supported on Android platform.");
-            return null;
-#endif
         }
 
-        /// <summary>
-        /// 判断文件是否存在
-        /// </summary>
-        /// <param name="path">相对目录</param>
-        /// <returns>文件是否存在</returns>
-        public static bool IsFileExists(string path)
+        public static string[] GetFiles(string path, string searchPattern, SearchOption searchOption)
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                return false;
-            }
-
-            if (_fileCache.Contains(path))
-            {
-                return true;
-            }
-
-#if UNITY_ANDROID
-            EnsureAssetManager();
-
-            AndroidJavaObject inputStream = null;
-            try
-            {
-                inputStream = _assetManager.Call<AndroidJavaObject>("open", path);
-                inputStream.Call("close");
-                _fileCache.Add(path);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            finally
-            {
-                if (inputStream != null)
-                {
-                    inputStream.Dispose();
-                }
-            }
-#else
-            return false;
-#endif
+            return BlankReadAssetsImpl.GetFiles(path, searchPattern, searchOption);
         }
+
+        public static string[] GetFiles(string path)
+        {
+            return GetFiles(path, null);
+        }
+
+        public static string[] GetFiles(string path, string searchPattern)
+        {
+            return GetFiles(path, searchPattern, SearchOption.TopDirectoryOnly);
+        }
+
+        private static ReadInfo GetInfoOrThrow(string path)
+        {
+            ReadInfo result;
+            if ( !BlankReadAssetsImpl.TryGetInfo(path, out result) )
+            {
+                ThrowFileNotFound(path);
+            }
+            return result;
+        }
+
+        private static void ThrowFileNotFound(string path)
+        {
+            throw new FileNotFoundException("File not found", path);
+        }
+
+        static partial void AndroidIsCompressedFileStreamingAsset(string path, ref bool result);
     }
 }
