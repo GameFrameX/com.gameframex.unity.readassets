@@ -27,7 +27,9 @@
 
 Access StreamingAssets directly in a uniform and thread-safe way with tiny overhead. Based on [BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets), provides `System.IO`-style APIs for all platforms including Android APK.
 
-This library primarily serves as a sub-library for `https://github.com/AlianBlank/GameFrameX`.
+All public APIs are annotated with `[Preserve]` to prevent stripping in IL2CPP builds.
+
+This library primarily serves as a sub-library for [GameFrameX](https://github.com/AlianBlank/GameFrameX).
 
 ## Quick Start
 
@@ -44,66 +46,67 @@ This library primarily serves as a sub-library for `https://github.com/AlianBlan
 
 ## Usage Examples
 
-### Backward-Compatible API (BlankReadAssets)
+### Basic Usage
 
-- **Read** - Read as `byte[]` array (returns `null` on failure):
-
-```csharp
-byte[] buffer = BlankReadAssets.Read(string path);
-```
-
-- **IsFileExists** - Check if file exists:
+No manual initialization needed — APIs auto-initialize on first call. To initialize in advance:
 
 ```csharp
-bool isFileExists = BlankReadAssets.IsFileExists(string path);
+// Manual initialization (main thread)
+BlankReadAssets.Initialize();
+
+// Get StreamingAssets root path
+string root = BlankReadAssets.Root;
 ```
 
-### Full API (BetterStreamingAssets)
-
-```csharp
-// Initialize before first use (main thread required)
-BetterStreamingAssets.Initialize();
-```
-
-#### Reading Files
+### Reading Files
 
 ```csharp
 // Read all bytes
-byte[] data = BetterStreamingAssets.ReadAllBytes("Foo/bar.data");
+byte[] data = BlankReadAssets.ReadAllBytes("Foo/bar.data");
 
 // Read as stream
-using (var stream = BetterStreamingAssets.OpenRead("Foo/bar.data"))
+using (var stream = BlankReadAssets.OpenRead("Foo/bar.data"))
 {
     // read from stream...
 }
 
 // Read all text
-string text = BetterStreamingAssets.ReadAllText("Foo/config.xml");
+string text = BlankReadAssets.ReadAllText("Foo/config.xml");
 
 // Read all lines
-string[] lines = BetterStreamingAssets.ReadAllLines("Foo/data.txt");
+string[] lines = BlankReadAssets.ReadAllLines("Foo/data.txt");
 ```
 
-#### File & Directory Queries
+### File & Directory Queries
 
 ```csharp
 // Check existence
-bool exists = BetterStreamingAssets.FileExists("Config/settings.json");
-bool dirExists = BetterStreamingAssets.DirectoryExists("Config");
+bool exists = BlankReadAssets.FileExists("Config/settings.json");
+bool dirExists = BlankReadAssets.DirectoryExists("Config");
 
 // List files
-string[] allXmls = BetterStreamingAssets.GetFiles("/", "*.xml", SearchOption.AllDirectories);
-string[] configs = BetterStreamingAssets.GetFiles("Config", "*.xml");
+string[] allXmls = BlankReadAssets.GetFiles("/", "*.xml", SearchOption.AllDirectories);
+string[] configs = BlankReadAssets.GetFiles("Config", "*.xml");
 ```
 
-#### Asset Bundles
+### Asset Bundles
 
 ```csharp
 // Synchronous
-var bundle = BetterStreamingAssets.LoadAssetBundle(path);
+var bundle = BlankReadAssets.LoadAssetBundle(path);
 
 // Asynchronous
-var bundleOp = BetterStreamingAssets.LoadAssetBundleAsync(path);
+var bundleOp = BlankReadAssets.LoadAssetBundleAsync(path);
+```
+
+### Editor Extensions (Editor Only)
+
+```csharp
+// Initialize with an external APK (for testing Android builds in Editor)
+BlankReadAssets.InitializeWithExternalApk("/path/to/app.apk");
+
+// Initialize with custom directories
+BlankReadAssets.InitializeWithExternalDirectories(dataPath, streamingAssetsPath);
 ```
 
 ## Platform Notes
@@ -115,7 +118,7 @@ var bundleOp = BetterStreamingAssets.LoadAssetBundleAsync(path);
 
 ### WebGL
 
-WebGL is not supported. It would require a completely async API.
+WebGL is not supported.
 
 ## Changelog
 

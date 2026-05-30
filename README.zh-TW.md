@@ -27,83 +27,86 @@
 
 以統一且執行緒安全的方式直接存取 StreamingAssets，開銷極小。基於 [BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets)，提供 `System.IO` 風格的 API，支援包括 Android APK 在內的所有平台。
 
-本函式庫主要服務於 `https://github.com/AlianBlank/GameFrameX` 作為子庫使用。
+所有公開 API 均標注了 `[Preserve]` 特性，可安全用於 IL2CPP 構建。
+
+本函式庫主要服務於 [GameFrameX](https://github.com/AlianBlank/GameFrameX) 作為子庫使用。
 
 ## 快速開始
 
 ### 安裝方式（三種方式）
 
-1. 直接在 `manifest.json` 檔案中加入以下內容
+1. 直接在 `manifest.json` 檔案中加入以下內容：
    ```json
    {"com.gameframex.unity.readassets": "https://github.com/AlianBlank/com.gameframex.unity.readassets.git"}
    ```
 
-2. 在 Unity 的 `Packages Manager` 中使用 `Git URL` 的方式新增函式庫，網址為：https://github.com/AlianBlank/com.gameframex.unity.readassets.git
+2. 在 Unity 的 `Package Manager` 中使用 `Git URL` 新增：https://github.com/AlianBlank/com.gameframex.unity.readassets.git
 
-3. 直接下載倉庫放置到 Unity 專案的 `Packages` 目錄下。會自動載入識別。
+3. 直接下載倉庫放置到 Unity 專案的 `Packages` 目錄下，會自動載入識別。
 
 ## 使用範例
 
-### 向後相容 API（BlankReadAssets）
+### 基礎用法
 
-- **Read** - 讀取 `byte[]` 陣列（失敗傳回 `null`）：
-
-```csharp
-byte[] buffer = BlankReadAssets.Read(string path);
-```
-
-- **IsFileExists** - 檔案是否存在：
+無需手動初始化——首次呼叫 API 時會自動完成初始化。如需提前初始化，可手動呼叫：
 
 ```csharp
-bool isFileExists = BlankReadAssets.IsFileExists(string path);
+// 手動初始化（主執行緒）
+BlankReadAssets.Initialize();
+
+// 取得 StreamingAssets 根路徑
+string root = BlankReadAssets.Root;
 ```
 
-### 完整 API（BetterStreamingAssets）
-
-```csharp
-// 首次使用前初始化（需要在主執行緒呼叫）
-BetterStreamingAssets.Initialize();
-```
-
-#### 讀取檔案
+### 讀取檔案
 
 ```csharp
 // 讀取全部位元組
-byte[] data = BetterStreamingAssets.ReadAllBytes("Foo/bar.data");
+byte[] data = BlankReadAssets.ReadAllBytes("Foo/bar.data");
 
 // 以串流方式讀取
-using (var stream = BetterStreamingAssets.OpenRead("Foo/bar.data"))
+using (var stream = BlankReadAssets.OpenRead("Foo/bar.data"))
 {
     // 從串流中讀取...
 }
 
 // 讀取全部文字
-string text = BetterStreamingAssets.ReadAllText("Foo/config.xml");
+string text = BlankReadAssets.ReadAllText("Foo/config.xml");
 
 // 讀取全部行
-string[] lines = BetterStreamingAssets.ReadAllLines("Foo/data.txt");
+string[] lines = BlankReadAssets.ReadAllLines("Foo/data.txt");
 ```
 
-#### 檔案與目錄查詢
+### 檔案與目錄查詢
 
 ```csharp
 // 檢查存在性
-bool exists = BetterStreamingAssets.FileExists("Config/settings.json");
-bool dirExists = BetterStreamingAssets.DirectoryExists("Config");
+bool exists = BlankReadAssets.FileExists("Config/settings.json");
+bool dirExists = BlankReadAssets.DirectoryExists("Config");
 
 // 列出檔案
-string[] allXmls = BetterStreamingAssets.GetFiles("/", "*.xml", SearchOption.AllDirectories);
-string[] configs = BetterStreamingAssets.GetFiles("Config", "*.xml");
+string[] allXmls = BlankReadAssets.GetFiles("/", "*.xml", SearchOption.AllDirectories);
+string[] configs = BlankReadAssets.GetFiles("Config", "*.xml");
 ```
 
-#### Asset Bundle
+### Asset Bundle
 
 ```csharp
 // 同步載入
-var bundle = BetterStreamingAssets.LoadAssetBundle(path);
+var bundle = BlankReadAssets.LoadAssetBundle(path);
 
 // 非同步載入
-var bundleOp = BetterStreamingAssets.LoadAssetBundleAsync(path);
+var bundleOp = BlankReadAssets.LoadAssetBundleAsync(path);
+```
+
+### Editor 擴展（僅編輯器可用）
+
+```csharp
+// 使用外部 APK 初始化（用於編輯器內測試 Android 建置）
+BlankReadAssets.InitializeWithExternalApk("/path/to/app.apk");
+
+// 使用自訂目錄初始化
+BlankReadAssets.InitializeWithExternalDirectories(dataPath, streamingAssetsPath);
 ```
 
 ## 平台說明
