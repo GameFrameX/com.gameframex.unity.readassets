@@ -19,7 +19,7 @@ namespace GameFrameX.ReadAssets.Runtime
 {
     /// <summary>
     /// StreamingAssets 文件读取工具，以统一且线程安全的方式直接访问 StreamingAssets。
-    /// 支持包括 Android APK 在内的所有平台。
+    /// 支持包括 Android APK 在内的所有平台。首次调用 API 时自动初始化。
     /// </summary>
     public static partial class BlankReadAssets
     {
@@ -31,19 +31,36 @@ namespace GameFrameX.ReadAssets.Runtime
             public uint crc32;
         }
 
+        private static bool s_initialized;
+
+        private static void EnsureInitialized()
+        {
+            if (!s_initialized)
+            {
+                Initialize();
+                s_initialized = true;
+            }
+        }
+
         public static string Root
         {
-            get { return BlankReadAssetsImpl.s_root; }
+            get
+            {
+                EnsureInitialized();
+                return BlankReadAssetsImpl.s_root;
+            }
         }
 
         public static void Initialize()
         {
             BlankReadAssetsImpl.Initialize(Application.dataPath, Application.streamingAssetsPath);
+            s_initialized = true;
         }
 
         public static void Initialize(string dataPath, string streamingAssetsPath)
         {
             BlankReadAssetsImpl.Initialize(dataPath, streamingAssetsPath);
+            s_initialized = true;
         }
 
         /// <summary>
@@ -61,12 +78,14 @@ namespace GameFrameX.ReadAssets.Runtime
         {
             BlankReadAssetsImpl.ApkMode = true;
             BlankReadAssetsImpl.Initialize(apkPath, "jar:file://" + apkPath + "!/assets/");
+            s_initialized = true;
         }
 
         public static void InitializeWithExternalDirectories(string dataPath, string streamingAssetsPath)
         {
             BlankReadAssetsImpl.ApkMode = false;
             BlankReadAssetsImpl.Initialize(dataPath, streamingAssetsPath);
+            s_initialized = true;
         }
 #endif
 
@@ -77,12 +96,14 @@ namespace GameFrameX.ReadAssets.Runtime
         /// <returns>文件是否存在</returns>
         public static bool FileExists(string path)
         {
+            EnsureInitialized();
             ReadInfo info;
             return BlankReadAssetsImpl.TryGetInfo(path, out info);
         }
 
         public static bool DirectoryExists(string path)
         {
+            EnsureInitialized();
             return BlankReadAssetsImpl.DirectoryExists(path);
         }
 
@@ -109,6 +130,7 @@ namespace GameFrameX.ReadAssets.Runtime
                 throw new ArgumentException("Empty path", "path");
             }
 
+            EnsureInitialized();
             return BlankReadAssetsImpl.OpenRead(path);
         }
 
@@ -169,11 +191,13 @@ namespace GameFrameX.ReadAssets.Runtime
                 throw new ArgumentException("Empty path", "path");
             }
 
+            EnsureInitialized();
             return BlankReadAssetsImpl.ReadAllBytes(path);
         }
 
         public static string[] GetFiles(string path, string searchPattern, SearchOption searchOption)
         {
+            EnsureInitialized();
             return BlankReadAssetsImpl.GetFiles(path, searchPattern, searchOption);
         }
 
@@ -189,6 +213,7 @@ namespace GameFrameX.ReadAssets.Runtime
 
         private static ReadInfo GetInfoOrThrow(string path)
         {
+            EnsureInitialized();
             ReadInfo result;
             if ( !BlankReadAssetsImpl.TryGetInfo(path, out result) )
             {
