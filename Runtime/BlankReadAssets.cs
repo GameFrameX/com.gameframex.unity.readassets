@@ -81,20 +81,6 @@ namespace GameFrameX.ReadAssets.Runtime
             return BlankReadAssetsImpl.TryGetInfo(path, out info);
         }
 
-        /// <summary>
-        /// 检查文件是否存在（向后兼容）
-        /// </summary>
-        /// <param name="path">相对路径</param>
-        /// <returns>文件是否存在</returns>
-        public static bool IsFileExists(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                return false;
-            }
-            return FileExists(path);
-        }
-
         public static bool DirectoryExists(string path)
         {
             return BlankReadAssetsImpl.DirectoryExists(path);
@@ -184,29 +170,6 @@ namespace GameFrameX.ReadAssets.Runtime
             }
 
             return BlankReadAssetsImpl.ReadAllBytes(path);
-        }
-
-        /// <summary>
-        /// 读取文件（向后兼容，失败返回 null）
-        /// </summary>
-        /// <param name="path">相对路径</param>
-        /// <returns>文件字节数组，失败返回 null</returns>
-        public static byte[] Read(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentException("Path cannot be null or empty.", "path");
-            }
-
-            try
-            {
-                return ReadAllBytes(path);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("[BlankReadAssets] Failed to read file '" + path + "': " + e.Message);
-                return null;
-            }
         }
 
         public static string[] GetFiles(string path, string searchPattern, SearchOption searchOption)
