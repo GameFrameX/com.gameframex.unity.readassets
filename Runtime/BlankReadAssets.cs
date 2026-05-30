@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using GameFrameX.ReadAssets.Runtime.ZipArchive;
+using UnityEngine.Scripting;
 
 #if UNITY_EDITOR
 using BlankReadAssetsImpl = GameFrameX.ReadAssets.Runtime.BlankReadAssets.EditorImpl;
@@ -42,6 +43,7 @@ namespace GameFrameX.ReadAssets.Runtime
             }
         }
 
+        [Preserve]
         public static string Root
         {
             get
@@ -51,12 +53,14 @@ namespace GameFrameX.ReadAssets.Runtime
             }
         }
 
+        [Preserve]
         public static void Initialize()
         {
             BlankReadAssetsImpl.Initialize(Application.dataPath, Application.streamingAssetsPath);
             s_initialized = true;
         }
 
+        [Preserve]
         public static void Initialize(string dataPath, string streamingAssetsPath)
         {
             BlankReadAssetsImpl.Initialize(dataPath, streamingAssetsPath);
@@ -74,6 +78,7 @@ namespace GameFrameX.ReadAssets.Runtime
 #endif
 
 #if UNITY_EDITOR
+        [Preserve]
         public static void InitializeWithExternalApk(string apkPath)
         {
             BlankReadAssetsImpl.ApkMode = true;
@@ -81,6 +86,7 @@ namespace GameFrameX.ReadAssets.Runtime
             s_initialized = true;
         }
 
+        [Preserve]
         public static void InitializeWithExternalDirectories(string dataPath, string streamingAssetsPath)
         {
             BlankReadAssetsImpl.ApkMode = false;
@@ -94,6 +100,7 @@ namespace GameFrameX.ReadAssets.Runtime
         /// </summary>
         /// <param name="path">相对路径</param>
         /// <returns>文件是否存在</returns>
+        [Preserve]
         public static bool FileExists(string path)
         {
             EnsureInitialized();
@@ -101,24 +108,28 @@ namespace GameFrameX.ReadAssets.Runtime
             return BlankReadAssetsImpl.TryGetInfo(path, out info);
         }
 
+        [Preserve]
         public static bool DirectoryExists(string path)
         {
             EnsureInitialized();
             return BlankReadAssetsImpl.DirectoryExists(path);
         }
 
+        [Preserve]
         public static AssetBundleCreateRequest LoadAssetBundleAsync(string path, uint crc = 0)
         {
             var info = GetInfoOrThrow(path);
             return AssetBundle.LoadFromFileAsync(info.readPath, crc, (ulong)info.offset);
         }
 
+        [Preserve]
         public static AssetBundle LoadAssetBundle(string path, uint crc = 0)
         {
             var info = GetInfoOrThrow(path);
             return AssetBundle.LoadFromFile(info.readPath, crc, (ulong)info.offset);
         }
 
+        [Preserve]
         public static Stream OpenRead(string path)
         {
             if ( path == null )
@@ -134,6 +145,7 @@ namespace GameFrameX.ReadAssets.Runtime
             return BlankReadAssetsImpl.OpenRead(path);
         }
 
+        [Preserve]
         public static StreamReader OpenText(string path)
         {
             Stream str = OpenRead(path);
@@ -151,6 +163,7 @@ namespace GameFrameX.ReadAssets.Runtime
             }
         }
 
+        [Preserve]
         public static string ReadAllText(string path)
         {
             using ( var sr = OpenText(path) )
@@ -159,6 +172,7 @@ namespace GameFrameX.ReadAssets.Runtime
             }
         }
 
+        [Preserve]
         public static string[] ReadAllLines(string path)
         {
             string line;
@@ -180,6 +194,7 @@ namespace GameFrameX.ReadAssets.Runtime
         /// </summary>
         /// <param name="path">相对路径</param>
         /// <returns>文件字节数组</returns>
+        [Preserve]
         public static byte[] ReadAllBytes(string path)
         {
             if ( path == null )
@@ -195,17 +210,20 @@ namespace GameFrameX.ReadAssets.Runtime
             return BlankReadAssetsImpl.ReadAllBytes(path);
         }
 
+        [Preserve]
         public static string[] GetFiles(string path, string searchPattern, SearchOption searchOption)
         {
             EnsureInitialized();
             return BlankReadAssetsImpl.GetFiles(path, searchPattern, searchOption);
         }
 
+        [Preserve]
         public static string[] GetFiles(string path)
         {
             return GetFiles(path, null);
         }
 
+        [Preserve]
         public static string[] GetFiles(string path, string searchPattern)
         {
             return GetFiles(path, searchPattern, SearchOption.TopDirectoryOnly);

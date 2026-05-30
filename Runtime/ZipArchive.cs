@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using UnityEngine.Scripting;
 
 namespace GameFrameX.ReadAssets.Runtime.ZipArchive
 {
@@ -593,9 +594,11 @@ namespace GameFrameX.ReadAssets.Runtime.ZipArchive
 
     public class ZipArchiveException : Exception
     {
+        [Preserve]
         public ZipArchiveException(string msg) : base(msg)
         { }
 
+        [Preserve]
         public ZipArchiveException(string msg, Exception inner)
             : base(msg, inner)
         {
@@ -604,6 +607,7 @@ namespace GameFrameX.ReadAssets.Runtime.ZipArchive
 
     public static class ZipArchiveUtils
     {
+        [Preserve]
         public static void ReadEndOfCentralDirectory(Stream stream, BinaryReader reader, out long expectedNumberOfEntries, out long centralDirectoryStart)
         {
             try
