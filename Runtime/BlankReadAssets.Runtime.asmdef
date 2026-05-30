@@ -1,3 +1,8 @@
 {
-  "name": "BlankReadAssets.Runtime"
+  "name": "BlankReadAssets.Runtime",
+  "references": [],
+  "optionalUnityReferences": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false
 }
