@@ -25,7 +25,7 @@
 
 ## Project Overview
 
-Read files under `StreamingAssets` in Unity through synchronous interfaces (without using `WWW`).
+Access StreamingAssets directly in a uniform and thread-safe way with tiny overhead. Based on [BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets), provides `System.IO`-style APIs for all platforms including Android APK.
 
 This library primarily serves as a sub-library for `https://github.com/AlianBlank/GameFrameX`.
 
@@ -44,9 +44,9 @@ This library primarily serves as a sub-library for `https://github.com/AlianBlan
 
 ## Usage Examples
 
-### Relative path input
+### Backward-Compatible API (BlankReadAssets)
 
-- **ReadBuffer** - Read as `byte[]` array:
+- **Read** - Read as `byte[]` array (returns `null` on failure):
 
 ```csharp
 byte[] buffer = BlankReadAssets.Read(string path);
@@ -57,6 +57,65 @@ byte[] buffer = BlankReadAssets.Read(string path);
 ```csharp
 bool isFileExists = BlankReadAssets.IsFileExists(string path);
 ```
+
+### Full API (BetterStreamingAssets)
+
+```csharp
+// Initialize before first use (main thread required)
+BetterStreamingAssets.Initialize();
+```
+
+#### Reading Files
+
+```csharp
+// Read all bytes
+byte[] data = BetterStreamingAssets.ReadAllBytes("Foo/bar.data");
+
+// Read as stream
+using (var stream = BetterStreamingAssets.OpenRead("Foo/bar.data"))
+{
+    // read from stream...
+}
+
+// Read all text
+string text = BetterStreamingAssets.ReadAllText("Foo/config.xml");
+
+// Read all lines
+string[] lines = BetterStreamingAssets.ReadAllLines("Foo/data.txt");
+```
+
+#### File & Directory Queries
+
+```csharp
+// Check existence
+bool exists = BetterStreamingAssets.FileExists("Config/settings.json");
+bool dirExists = BetterStreamingAssets.DirectoryExists("Config");
+
+// List files
+string[] allXmls = BetterStreamingAssets.GetFiles("/", "*.xml", SearchOption.AllDirectories);
+string[] configs = BetterStreamingAssets.GetFiles("Config", "*.xml");
+```
+
+#### Asset Bundles
+
+```csharp
+// Synchronous
+var bundle = BetterStreamingAssets.LoadAssetBundle(path);
+
+// Asynchronous
+var bundleOp = BetterStreamingAssets.LoadAssetBundleAsync(path);
+```
+
+## Platform Notes
+
+### Android & App Bundles
+
+- Keep all file names in StreamingAssets lowercase
+- Do not use non-ASCII characters in file names
+
+### WebGL
+
+WebGL is not supported. It would require a completely async API.
 
 ## Changelog
 

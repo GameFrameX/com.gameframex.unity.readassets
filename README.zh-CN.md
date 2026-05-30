@@ -25,7 +25,7 @@
 
 ## 项目简介
 
-Unity 中通过非 `WWW` 的方式读取 `StreamingAssets` 下的文件。
+以统一且线程安全的方式直接访问 StreamingAssets，开销极小。基于 [BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets)，提供 `System.IO` 风格的 API，支持包括 Android APK 在内的所有平台。
 
 该库主要服务于 `https://github.com/AlianBlank/GameFrameX` 作为子库使用。
 
@@ -44,9 +44,9 @@ Unity 中通过非 `WWW` 的方式读取 `StreamingAssets` 下的文件。
 
 ## 使用示例
 
-### 传入路径为相对目录
+### 向后兼容 API（BlankReadAssets）
 
-- **ReadBuffer** - 读取 `byte[]` 数组：
+- **Read** - 读取 `byte[]` 数组（失败返回 `null`）：
 
 ```csharp
 byte[] buffer = BlankReadAssets.Read(string path);
@@ -57,6 +57,65 @@ byte[] buffer = BlankReadAssets.Read(string path);
 ```csharp
 bool isFileExists = BlankReadAssets.IsFileExists(string path);
 ```
+
+### 完整 API（BetterStreamingAssets）
+
+```csharp
+// 首次使用前初始化（需要在主线程调用）
+BetterStreamingAssets.Initialize();
+```
+
+#### 读取文件
+
+```csharp
+// 读取全部字节
+byte[] data = BetterStreamingAssets.ReadAllBytes("Foo/bar.data");
+
+// 以流方式读取
+using (var stream = BetterStreamingAssets.OpenRead("Foo/bar.data"))
+{
+    // 从流中读取...
+}
+
+// 读取全部文本
+string text = BetterStreamingAssets.ReadAllText("Foo/config.xml");
+
+// 读取全部行
+string[] lines = BetterStreamingAssets.ReadAllLines("Foo/data.txt");
+```
+
+#### 文件与目录查询
+
+```csharp
+// 检查存在性
+bool exists = BetterStreamingAssets.FileExists("Config/settings.json");
+bool dirExists = BetterStreamingAssets.DirectoryExists("Config");
+
+// 列出文件
+string[] allXmls = BetterStreamingAssets.GetFiles("/", "*.xml", SearchOption.AllDirectories);
+string[] configs = BetterStreamingAssets.GetFiles("Config", "*.xml");
+```
+
+#### Asset Bundle
+
+```csharp
+// 同步加载
+var bundle = BetterStreamingAssets.LoadAssetBundle(path);
+
+// 异步加载
+var bundleOp = BetterStreamingAssets.LoadAssetBundleAsync(path);
+```
+
+## 平台说明
+
+### Android 与 App Bundle
+
+- StreamingAssets 中的文件名请全部使用小写
+- 不要在文件名中使用非 ASCII 字符
+
+### WebGL
+
+不支持 WebGL 平台。
 
 ## 更新日志
 

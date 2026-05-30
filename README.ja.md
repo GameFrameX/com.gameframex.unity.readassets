@@ -8,7 +8,7 @@
 [![Version](https://img.shields.io/github/v/release/GameFrameX/com.gameframex.unity.readassets)](https://github.com/GameFrameX/com.gameframex.unity.readassets/releases)
 [![Documentation](https://img.shields.io/badge/Documentation-docs-blue)](https://gameframex.doc.alianblank.com)
 
-> インディゲーム開発者向けオールインワンソリューション · インディ開発者の夢を支援
+> インディーゲーム開発のオールインワンソリューション · インディー開発者の夢を応援
 
 [ドキュメント](https://gameframex.doc.alianblank.com) · [クイックスタート](#クイックスタート) · [QQグループ](https://qm.qq.com/q/5U9Fvebw) · [言語](#言語)
 
@@ -25,7 +25,7 @@
 
 ## プロジェクト概要
 
-Unity で `WWW` を使用せずに `StreamingAssets` 下のファイルを読み取ります。
+StreamingAssets に統一的かつスレッドセーフな方法で直接アクセスし、最小限のオーバーヘッドでアクセスできます。[BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets) をベースに、Android APK を含むすべてのプラットフォームに対応する `System.IO` スタイルの API を提供します。
 
 このライブラリは主に `https://github.com/AlianBlank/GameFrameX` のサブライブラリとして使用されます。
 
@@ -33,30 +33,89 @@ Unity で `WWW` を使用せずに `StreamingAssets` 下のファイルを読み
 
 ### インストール（3つの方法）
 
-1. `manifest.json` ファイルに以下の内容を直接追加します：
+1. `manifest.json` に以下を直接追加：
    ```json
    {"com.gameframex.unity.readassets": "https://github.com/AlianBlank/com.gameframex.unity.readassets.git"}
    ```
 
 2. Unity の `Package Manager` で `Git URL` を使用して追加：https://github.com/AlianBlank/com.gameframex.unity.readassets.git
 
-3. リポジトリを直接ダウンロードして、Unity プロジェクトの `Packages` ディレクトリに配置します。自動的に読み込まれます。
+3. リポジトリを直接ダウンロードして Unity プロジェクトの `Packages` ディレクトリに配置。自動的に読み込まれます。
 
 ## 使用例
 
-### 相対パスを入力
+### 後方互換 API（BlankReadAssets）
 
-- **ReadBuffer** - `byte[]` 配列として読み取る：
+- **Read** - `byte[]` 配列として読み込み（失敗時は `null` を返す）：
 
 ```csharp
 byte[] buffer = BlankReadAssets.Read(string path);
 ```
 
-- **IsFileExists** - ファイルが存在するか確認：
+- **IsFileExists** - ファイルの存在確認：
 
 ```csharp
 bool isFileExists = BlankReadAssets.IsFileExists(string path);
 ```
+
+### フル API（BetterStreamingAssets）
+
+```csharp
+// 初回使用前に初期化（メインスレッドで呼び出す必要があります）
+BetterStreamingAssets.Initialize();
+```
+
+#### ファイルの読み込み
+
+```csharp
+// 全バイトを読み込み
+byte[] data = BetterStreamingAssets.ReadAllBytes("Foo/bar.data");
+
+// ストリームとして読み込み
+using (var stream = BetterStreamingAssets.OpenRead("Foo/bar.data"))
+{
+    // ストリームから読み込み...
+}
+
+// 全テキストを読み込み
+string text = BetterStreamingAssets.ReadAllText("Foo/config.xml");
+
+// 全行を読み込み
+string[] lines = BetterStreamingAssets.ReadAllLines("Foo/data.txt");
+```
+
+#### ファイルとディレクトリのクエリ
+
+```csharp
+// 存在確認
+bool exists = BetterStreamingAssets.FileExists("Config/settings.json");
+bool dirExists = BetterStreamingAssets.DirectoryExists("Config");
+
+// ファイル一覧の取得
+string[] allXmls = BetterStreamingAssets.GetFiles("/", "*.xml", SearchOption.AllDirectories);
+string[] configs = BetterStreamingAssets.GetFiles("Config", "*.xml");
+```
+
+#### アセットバンドル
+
+```csharp
+// 同期読み込み
+var bundle = BetterStreamingAssets.LoadAssetBundle(path);
+
+// 非同期読み込み
+var bundleOp = BetterStreamingAssets.LoadAssetBundleAsync(path);
+```
+
+## プラットフォームに関する注意
+
+### Android と App Bundle
+
+- StreamingAssets 内のファイル名はすべて小文字にしてください
+- ファイル名に非 ASCII 文字を使用しないでください
+
+### WebGL
+
+WebGL プラットフォームはサポートされていません。
 
 ## 変更履歴
 
@@ -64,4 +123,4 @@ bool isFileExists = BlankReadAssets.IsFileExists(string path);
 
 ## ライセンス
 
-このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE.md](LICENSE.md) ファイルをご覧ください。
+このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE.md](LICENSE.md) をご覧ください。
