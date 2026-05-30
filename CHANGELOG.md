@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.1.1...1.2.0) (2026-05-30)
+
+
+### Features
+
+* **readassets:** 添加 EnsureInitialized 惰性初始化，API 首次调用时自动初始化 ([aba0a0a](https://github.com/gameframex/com.gameframex.unity.readassets/commit/aba0a0a740de2e5586652dbab602753b28342412))
+* **readassets:** 添加 Preserve 属性防止 IL2CPP 裁剪 ([5c224f4](https://github.com/gameframex/com.gameframex.unity.readassets/commit/5c224f4772ce122d12b1855bacfcfeb4f4038e54))
+* **readassets:** 添加底层工具类 PathUtil、SubReadOnlyStream、ZipArchive ([cf7a8aa](https://github.com/gameframex/com.gameframex.unity.readassets/commit/cf7a8aa25339cd2005e8530ff8abf1d195e4e3f5))
+
 ## [1.1.1](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.1.0...1.1.1) (2026-05-28)
 
 
