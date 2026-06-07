@@ -35,5 +35,8 @@
     "ReadAssets",
     "StreamingAssets",
     "BetterStreamingAssets"
-  ]
+  ],
+  "documentationUrl": "https://gameframex.doc.alianblank.com",
+  "changelogUrl": "https://github.com/gameframex/com.gameframex.unity.readassets/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/gameframex/com.gameframex.unity.readassets/blob/main/LICENSE.md"
 }
