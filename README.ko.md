@@ -67,7 +67,6 @@ Then add the package to `dependencies`:
 }
 ```
 
-
 ## 사용 예제
 
 ### 기본 사용법
@@ -150,4 +149,4 @@ WebGL 플랫폼은 지원되지 않습니다.
 
 ## 라이선스
 
-이 프로젝트는 MIT 라이선스에 따라 배포됩니다. 자세한 내용은 [LICENSE.md](LICENSE.md) 파일을 참조하세요.
+자세한 내용은 [LICENSE.md](LICENSE.md) 파일을 참조하세요.
