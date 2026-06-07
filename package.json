@@ -1,7 +1,7 @@
 {
   "name": "com.gameframex.unity.readassets",
   "displayName": "Game Frame X Read Assets",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "unity": "2019.4",
   "description": "GameFrameX ReadAssets — Access StreamingAssets directly in a uniform and thread-safe way with tiny overhead. Based on BetterStreamingAssets, provides System.IO-style APIs (ReadAllBytes, OpenRead, FileExists, GetFiles, LoadAssetBundle, etc.) for all platforms including Android APK. Docs: https://gameframex.doc.alianblank.com\n\nGameFrameX ReadAssets — 以统一且线程安全的方式直接访问 StreamingAssets，开销极小。基于 BetterStreamingAssets，提供 System.IO 风格的 API（ReadAllBytes、OpenRead、FileExists、GetFiles、LoadAssetBundle 等），支持包括 Android APK 在内的所有平台。文档：https://gameframex.doc.alianblank.com",
   "samples": [

@@ -1,3 +1,11 @@
+## [1.2.1](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.2.0...1.2.1) (2026-06-07)
+
+
+### Bug Fixes
+
+* 统一 LICENSE.md 为 Apache 2.0 (自有仓库) ([d14f9a1](https://github.com/gameframex/com.gameframex.unity.readassets/commit/d14f9a145a3554f1ef2c76bb6e7cfe0ac7868727))
+* 补全包规范文件（LICENSE/CHANGELOG/URL 字段/unity 字段） ([30d5e03](https://github.com/gameframex/com.gameframex.unity.readassets/commit/30d5e03eb65de491dad9a1ad0a30d711d54564fb))
+
 # [1.2.0](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.1.1...1.2.0) (2026-05-30)
 
 
