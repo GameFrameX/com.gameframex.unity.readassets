@@ -37,16 +37,36 @@ This library primarily serves as a sub-library for [GameFrameX](https://github.c
 
 ## Quick Start
 
-### Installation (three methods)
+### Installation
 
-1. Add the following content directly to `manifest.json`:
-   ```json
-   {"com.gameframex.unity.readassets": "https://github.com/AlianBlank/com.gameframex.unity.readassets.git"}
-   ```
+Edit your Unity project's `Packages/manifest.json` and add the `scopedRegistries` section:
 
-2. Add via Unity's `Package Manager` using `Git URL`: https://github.com/AlianBlank/com.gameframex.unity.readassets.git
+```json
+{
+  "scopedRegistries": [
+    {
+      "name": "GameFrameX",
+      "url": "https://gameframex.upm.alianblank.uk",
+      "scopes": [
+        "com.gameframex"
+      ]
+    }
+  ]
+}
+```
 
-3. Download the repository directly and place it in the Unity project's `Packages` directory. It will be auto-loaded.
+`scopes` controls which packages are resolved through this registry. Only packages whose names start with `com.gameframex` will be fetched from it.
+
+Then add the package to `dependencies`:
+
+```json
+{
+  "dependencies": {
+    "com.gameframex.unity.readassets": "1.2.0"
+  }
+}
+```
+
 
 ## Usage Examples
 

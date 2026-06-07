@@ -37,16 +37,36 @@
 
 ## 快速开始
 
-### 安装（三种方式）
+### 安装
 
-1. 直接在 `manifest.json` 文件中添加以下内容：
-   ```json
-   {"com.gameframex.unity.readassets": "https://github.com/AlianBlank/com.gameframex.unity.readassets.git"}
-   ```
+编辑 Unity 项目的 `Packages/manifest.json`，添加 `scopedRegistries` 部分：
 
-2. 在 Unity 的 `Package Manager` 中使用 `Git URL` 添加：https://github.com/AlianBlank/com.gameframex.unity.readassets.git
+```json
+{
+  "scopedRegistries": [
+    {
+      "name": "GameFrameX",
+      "url": "https://gameframex.upm.alianblank.uk",
+      "scopes": [
+        "com.gameframex"
+      ]
+    }
+  ]
+}
+```
 
-3. 直接下载仓库放置到 Unity 项目的 `Packages` 目录下，会自动加载识别。
+`scopes` 控制哪些包通过此注册表解析。只有以 `com.gameframex` 开头的包才会从这个注册表获取。
+
+Then add the package to `dependencies`:
+
+```json
+{
+  "dependencies": {
+    "com.gameframex.unity.readassets": "1.2.0"
+  }
+}
+```
+
 
 ## 使用示例
 
