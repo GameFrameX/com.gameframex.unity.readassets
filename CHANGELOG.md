@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.2.1...1.2.2) (2026-10-15)
+
+
+### Bug Fixes
+
+* **runtime:** Preserve 特性改为全限定名 ([b3b7408](https://github.com/gameframex/com.gameframex.unity.readassets/commit/b3b7408cf20519747e8c8f5a3fc813562e0cedde))
+
 ## [1.2.1](https://github.com/gameframex/com.gameframex.unity.readassets/compare/1.2.0...1.2.1) (2026-06-07)
 
 
