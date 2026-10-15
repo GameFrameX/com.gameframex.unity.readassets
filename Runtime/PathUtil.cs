@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using UnityEngine.Scripting;
 
 namespace GameFrameX.ReadAssets.Runtime
 {
@@ -16,13 +15,13 @@ namespace GameFrameX.ReadAssets.Runtime
             NothingSpecial,
         }
 
-        [Preserve]
+        [UnityEngine.Scripting.Preserve]
         public static bool IsDirectorySeparator(char c)
         {
             return c == '/' || c == '\\';
         }
 
-        [Preserve]
+        [UnityEngine.Scripting.Preserve]
         public static string FixTrailingDirectorySeparators(string path)
         {
             if ( path.Length >= 2 )
@@ -38,7 +37,7 @@ namespace GameFrameX.ReadAssets.Runtime
             return path;
         }
 
-        [Preserve]
+        [UnityEngine.Scripting.Preserve]
         public static string CombineSlash(string a, string b)
         {
             if ( a == null )
@@ -74,7 +73,7 @@ namespace GameFrameX.ReadAssets.Runtime
             }
         }
 
-        [Preserve]
+        [UnityEngine.Scripting.Preserve]
         public static string NormalizeRelativePath(string relative, bool forceTrailingSlash = false)
         {
             if (string.IsNullOrEmpty(relative))
@@ -169,7 +168,7 @@ namespace GameFrameX.ReadAssets.Runtime
             return output.ToString();
         }
 
-        [Preserve]
+        [UnityEngine.Scripting.Preserve]
         public static bool IsValidCharacter(char c)
         {
             if (c == '\"' || c == '<' || c == '>' || c == '|' || c < 32 || c == ':' || c == '*' || c == '?')
@@ -179,7 +178,7 @@ namespace GameFrameX.ReadAssets.Runtime
             return true;
         }
 
-        [Preserve]
+        [UnityEngine.Scripting.Preserve]
         public static Regex WildcardToRegex(string pattern)
         {
             return new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", RegexOptions.IgnoreCase);
