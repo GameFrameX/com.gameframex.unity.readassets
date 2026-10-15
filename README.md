@@ -31,7 +31,7 @@ All-in-One Solution for Indie Game Development · Empowering Indie Developers' D
 
 Access StreamingAssets directly in a uniform and thread-safe way with tiny overhead. Based on [BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets), provides `System.IO`-style APIs for all platforms including Android APK.
 
-All public APIs are annotated with `[Preserve]` to prevent stripping in IL2CPP builds.
+All public APIs are annotated with `[UnityEngine.Scripting.Preserve]` to prevent stripping in IL2CPP builds.
 
 This library primarily serves as a sub-library for [GameFrameX](https://github.com/AlianBlank/GameFrameX).
 

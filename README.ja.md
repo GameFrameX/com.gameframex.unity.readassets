@@ -31,7 +31,7 @@
 
 StreamingAssets に統一的かつスレッドセーフな方法で直接アクセスし、最小限のオーバーヘッドで実現します。[BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets) をベースに、Android APK を含むすべてのプラットフォームに対応する `System.IO` スタイルの API を提供します。
 
-すべての公開 API には `[Preserve]` 属性が付与されており、IL2CPP ビルドでも安全に使用できます。
+すべての公開 API には `[UnityEngine.Scripting.Preserve]` 属性が付与されており、IL2CPP ビルドでも安全に使用できます。
 
 このライブラリは主に [GameFrameX](https://github.com/AlianBlank/GameFrameX) のサブライブラリとして使用されます。
 

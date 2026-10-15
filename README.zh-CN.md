@@ -31,7 +31,7 @@
 
 以统一且线程安全的方式直接访问 StreamingAssets，开销极小。基于 [BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets)，提供 `System.IO` 风格的 API，支持包括 Android APK 在内的所有平台。
 
-所有公开 API 均标注了 `[Preserve]` 特性，可安全用于 IL2CPP 构建。
+所有公开 API 均标注了 `[UnityEngine.Scripting.Preserve]` 特性，可安全用于 IL2CPP 构建。
 
 该库主要服务于 [GameFrameX](https://github.com/AlianBlank/GameFrameX) 作为子库使用。
 

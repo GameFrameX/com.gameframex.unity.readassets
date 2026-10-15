@@ -31,7 +31,7 @@
 
 以統一且執行緒安全的方式直接存取 StreamingAssets，開銷極小。基於 [BetterStreamingAssets](https://github.com/gwiazdorrr/BetterStreamingAssets)，提供 `System.IO` 風格的 API，支援包括 Android APK 在內的所有平台。
 
-所有公開 API 均標注了 `[Preserve]` 特性，可安全用於 IL2CPP 構建。
+所有公開 API 均標注了 `[UnityEngine.Scripting.Preserve]` 特性，可安全用於 IL2CPP 構建。
 
 本函式庫主要服務於 [GameFrameX](https://github.com/AlianBlank/GameFrameX) 作為子庫使用。
 
